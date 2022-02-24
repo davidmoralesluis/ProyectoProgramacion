@@ -1,11 +1,16 @@
 package com.GrupoCod;
 
+
+import javax.swing.*;
+
 public class Main {
-
     public static void main(String[] args) {
-	System.out.println("test222");
-    System.out.println("balas");
 
- Object foo = new Object();
+            Lobby menu=new Lobby();
+            menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            menu.setVisible(true);
+            menu.setResizable(true);
+
+        }
     }
-}
+
