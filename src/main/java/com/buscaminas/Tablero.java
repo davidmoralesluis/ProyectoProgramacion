@@ -5,9 +5,13 @@ import com.Temporal;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import javax.swing.*;
 
 public class Tablero extends JFrame implements ActionListener {
+
+    private final String CARPETA = "src" + File.separator + "main" + File.separator + "java" + File.separator + "com" + File.separator + "main" + File.separator + "imagenes" + File.separator;
+
     int dimensiones;
     int dificultad;
     Celda[][] celdas;
@@ -62,12 +66,11 @@ public class Tablero extends JFrame implements ActionListener {
 
                                 if (!botones[fila][columna].isEnabled()) {
 
-                                    botones[fila][columna].setBackground(Color.lightGray);
+                                    botones[fila][columna].setIcon(new ImageIcon(CARPETA + "flag.png"));
 
                                 } else {
 
-                                    botones[fila][columna].setBackground(null);
-
+                                    botones[fila][columna].setIcon(null);
 
                                 }
                             }
@@ -83,8 +86,6 @@ public class Tablero extends JFrame implements ActionListener {
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.setVisible(true);
     }
-
-    //TODO Pensar en como hacer un metodo que devuelva una puntuacion mas justa
 
 
     private void ponerMinas() {
@@ -136,11 +137,8 @@ public class Tablero extends JFrame implements ActionListener {
         if (c.isMina()) {
 
             boton.setBackground(Color.darkGray);
-            playtime = System.currentTimeMillis() - playtime;
-            puntuacion = (int) (getDestapadas() / (1 + playtime / 1000));
-            Temporal.showMessage(this, "La puntuacion es de " + puntuacion + " puntos", "Has perdido, vuelve a intentarlo!");
-            terminada = true;
-            this.dispose();
+
+            calculateResult(false);
 
         } else {
 
@@ -171,8 +169,11 @@ public class Tablero extends JFrame implements ActionListener {
 
                                         botonAdyacente.setBackground(Color.white);
                                         botonAdyacente.removeActionListener(this);
-                                        celdaAdyacente.setDestapada(true);
+                                        botonAdyacente.setIcon(null);
+                                        botonAdyacente.setEnabled(true);
                                         botonAdyacente.setText(String.valueOf(celdaAdyacente.getMinasAdyacentes()));
+                                        celdaAdyacente.setDestapada(true);
+
 
                                         //Esto hace que si una de las celdas encontradas vuelve a no tener minas adyacentes, se  repita el escaneo
                                         if (celdaAdyacente.getMinasAdyacentes() == 0) {
@@ -197,13 +198,7 @@ public class Tablero extends JFrame implements ActionListener {
         //Esto comprueba si el numero de minas destapadas ya es iguala a las minas totales, si es asi, se gana el juego
         if (destapadas == dimensiones * dimensiones - minas) {
 
-            playtime = System.currentTimeMillis() - playtime;
-            puntuacion = (int) (getDestapadas() * 800 / (1 + playtime / 1000));
-
-            Temporal.showMessage(this, "La puntuacion es de " + puntuacion + " puntos", "Enhorabuena, has ganado!");
-
-            terminada = true;
-            this.dispose();
+            calculateResult(true);
 
         }
     }
@@ -221,6 +216,42 @@ public class Tablero extends JFrame implements ActionListener {
         return contador;
     }
 
+    public void calculateResult(boolean victory) {
+
+        playtime = System.currentTimeMillis() - playtime;
+
+        playtime /= 1000;
+        float penalty = 1.5f;
+
+        while (playtime >= 10) {
+
+            playtime -= 10;
+
+            penalty += 0.1f;
+
+        }
+
+        puntuacion = (int) (getDestapadas() * 8 / penalty);
+
+        String title = null;
+
+        if (victory) {
+
+            puntuacion *= 8;
+
+            title = "Enhorabuena, has ganado!";
+
+        } else {
+
+            title="Lastima,has perdido!";
+
+        }
+
+        Temporal.showMessage(this, "La puntuacion es de " + puntuacion + " puntos", title);
+        terminada = true;
+        this.dispose();
+
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {

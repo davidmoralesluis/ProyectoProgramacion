@@ -7,7 +7,7 @@ import com.data.User;
 import java.sql.*;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+
 
 public class DAOScore {
 
@@ -117,7 +117,7 @@ public class DAOScore {
             while (result.next()) {
                 i++;
 
-                userScoreTable[i - 1] = new String[]{i + "#", String.valueOf(result.getInt("puntuacion")), result.getTimestamp("fecha").toString()};
+                userScoreTable[i - 1] = new String[]{"#" + i, String.valueOf(result.getInt("puntuacion")), result.getTimestamp("fecha").toString()};
 
             }
 

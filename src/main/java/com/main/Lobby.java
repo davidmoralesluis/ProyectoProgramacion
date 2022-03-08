@@ -195,11 +195,13 @@ public class Lobby extends JFrame implements ActionListener {
 
         if (action.getSource() == score) {
 
-            if (Temporal.simpleSelector("Elige una opcion", "Puntuaciones", new String[]{"Usuario", "Global"}, this) == 0)
+
+            int seleccion=Temporal.simpleSelector("Elige una opcion", "Puntuaciones", new String[]{"Usuario", "Global"}, this,new ImageIcon(CARPETA+"trophy.png"));
+            if (seleccion==0)
 
                 DataMethods.showUserScore(user, this);
 
-            else
+            else if(seleccion==1)
 
                 DataMethods.showGlobalScore(this);
         }

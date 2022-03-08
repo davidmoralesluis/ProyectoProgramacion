@@ -152,7 +152,7 @@ public class DataMethods {
             String[] tableTitle = {"Posicion", "Puntuacion", "Fecha"};
 
             String fullUsername=u.getName()+"#"+u.getCode();
-            createTable(userScoreTable,tableTitle,"Puntuacion de "+fullUsername+"",parent);
+            createTable(userScoreTable,tableTitle,"Puntuacion de "+fullUsername+"",parent,u);
 
         } catch (noUser e) {
 
@@ -167,11 +167,15 @@ public class DataMethods {
         String[][] globalScoreTable = daoScore.select();
         String[] tableTitle = {"Posicion", "Jugador", "Puntuacion", "Fecha"};
 
-        createTable(globalScoreTable,tableTitle,"Puntuacion global",parent);
+        createTable(globalScoreTable,tableTitle,"Puntuacion global",parent,null);
 
     }
 
-    private static void createTable( String[][] data,String[] title,String messageTitle,Component parent) {
+    private static void createTable( String[][] data,String[] title,String messageTitle,Component parent,User u) {
+
+        String user;
+        if (u==null)user="Global";
+        else user=u.getName()+"#"+u.getCode();
 
         TableModel model = new DefaultTableModel(data, title)
         {
@@ -184,11 +188,21 @@ public class DataMethods {
         JTable table = new JTable(model);
         table.getTableHeader().setReorderingAllowed(false);
 
-        JOptionPane.showMessageDialog(parent, new JScrollPane(table){
+
+
+        int selection=JOptionPane.showOptionDialog(parent, new JScrollPane(table){
             public Dimension getPreferredSize() {
                 return new Dimension(800, 183);
             }
-        },messageTitle,JOptionPane.INFORMATION_MESSAGE);
+        },messageTitle,JOptionPane.INFORMATION_MESSAGE, JOptionPane.INFORMATION_MESSAGE,null,new String[] {"Guardar Fichero","Salir"},-1);
+
+        if (selection==0){
+
+            String path=Temporal.selectPath(parent,"Guardar Puntuacion");
+
+            if (path!=null) Temporal.fileWrite(path+"Puntuaciones_"+user+".txt",data,true);
+
+        }
 
 
     }
