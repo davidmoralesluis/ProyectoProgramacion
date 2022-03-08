@@ -91,5 +91,19 @@ public class Temporal {
 
     }
 
+    public static String askString(String mensaje,Component parent) {
+
+        return JOptionPane.showInputDialog(parent,mensaje);
+    }
+
+    public static boolean isNumeric(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch(NumberFormatException e){
+            return false;
+        }
+    }
+
 
 }

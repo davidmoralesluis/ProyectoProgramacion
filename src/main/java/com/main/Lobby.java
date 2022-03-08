@@ -33,7 +33,7 @@ public class Lobby extends JFrame implements ActionListener {
     private boolean sec;
     private int bling = 0;
     private boolean blingUp = false;
-    private User user = new User("1","Iker","123",10);
+    private User user = null;
 
 
     // Imagenes
@@ -196,12 +196,12 @@ public class Lobby extends JFrame implements ActionListener {
         if (action.getSource() == score) {
 
 
-            int seleccion=Temporal.simpleSelector("Elige una opcion", "Puntuaciones", new String[]{"Usuario", "Global"}, this,new ImageIcon(CARPETA+"trophy.png"));
-            if (seleccion==0)
+            int seleccion = Temporal.simpleSelector("Elige una opcion", "Puntuaciones", new String[]{"Usuario", "Global"}, this, new ImageIcon(CARPETA + "trophy.png"));
+            if (seleccion == 0)
 
                 DataMethods.showUserScore(user, this);
 
-            else if(seleccion==1)
+            else if (seleccion == 1)
 
                 DataMethods.showGlobalScore(this);
         }
@@ -209,16 +209,54 @@ public class Lobby extends JFrame implements ActionListener {
 
         if (action.getSource() == logUser) {
 
-            /*TODO Hacer una pestaña que compruebe si hay un usuario conectado
+            int eleccion;
+            if (user != null) {
+                eleccion = Temporal.simpleSelector("Usuario" + user.getName() + "#" + user.getCode(), "Usuario", new String[]{"Modificar credenciales", "Cerrar sesion", "Borrar usuario"}, this, img.get(4));
 
-                TODO En caso de no estar conectado abrir pestaña de registro/inicio de sesion
+                switch (eleccion) {
 
-                    TODO En las celdas de inicio de sesion que aparezcan pistas de como son el usuario y contraseña
+                    case 0 -> {
 
-                TODO Si hay un usuario conectado, dar la opcion de salir de sesion o de borrar usuario
+                        eleccion = Temporal.simpleSelector("Usuario" + user.getName() + "#" + user.getCode(), "Usuario", new String[]{"Cambiar Nombre", "Cambiar contraseña", "Cambiar nombre y contraseña"}, this, img.get(4));
 
-                    TODO Para borrar que te pida la contraseña a mano otra vez
-            */
+                        user = DataMethods.changeUserData(user, this, eleccion);
+
+                    }
+
+                    case 1 -> {
+
+                        if (JOptionPane.showConfirmDialog(this, "Estas seguro de esta operacion?", "Borrar Usuario", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+                            user = DataMethods.deleteUser(user, this);
+
+                    }
+
+                    case 2 -> {
+
+                        user = null;
+
+                    }
+
+                    default -> {
+
+
+                    }
+                }
+            }else{
+
+                eleccion=Temporal.simpleSelector("Escoja opcion", "Usuario", new String[]{"Iniciar Sesion","Registrarse"}, this, img.get(4));
+
+
+                if (eleccion==0){
+
+                    user=DataMethods.login(Temporal.askString("Introduce el nombre de usuario completo (Ejemplo#0)",this),Temporal.askString("Introduce la contraseña",this),this);
+
+                }
+                else if (eleccion==1){
+
+                    user=DataMethods.register(Temporal.askString("Introduce un nombre de usuario",this),Temporal.askString("Introduce una contraseña",this),this);
+                }
+
+            }
         }
 
         if (action.getSource() == halfsec) {

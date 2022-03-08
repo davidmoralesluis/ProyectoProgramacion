@@ -12,55 +12,51 @@ import java.awt.*;
 
 public class DataMethods {
 
-    public static User login(String completeUserName, String password, Component parent) {
+    public static User login(String completeUsername, String password, Component parent) {
 
         DAOUser daoUser = new DAOUser();
 
-        String[] userName = completeUserName.split("#");
+        String[] username = completeUsername.split("#");
 
-        User logUser = daoUser.get(userName[1]);
 
-        if (logUser == null) {
+        if (checkCredentials(username[1],username[0],password,parent)) {
 
-            Temporal.showMessage(parent, "Lo sentimos, el usuario indicado no existe", "Error");
+            User logUser = daoUser.get(username[1]);
 
-            return null;
+            if (logUser == null) {
 
-        } else if (logUser.getPassword().equals(password)) {
+                Temporal.showMessage(parent, "Lo sentimos, el usuario indicado no existe", "Error");
 
-            Temporal.showMessage(parent, "Sesion iniciada correctamente", "Error");
+                return null;
 
-            return logUser;
+            } else if (logUser.getPassword().equals(password)) {
 
-        } else {
+                Temporal.showMessage(parent, "Sesion iniciada correctamente", "Error");
 
-            Temporal.showMessage(parent, "La contraseña no es correcta. Porfavor vuelva a intentarlo.", "Error");
+                return logUser;
 
+            } else {
+
+                Temporal.showMessage(parent, "La contraseña no es correcta. Porfavor vuelva a intentarlo.", "Error");
+
+                return null;
+            }
+        }else{
             return null;
         }
     }
 
-    public static User register(String userName, String password, Component parent) {
+    public static User register(String username, String password, Component parent) {
 
-        if (userName.contains("#")) {
-
-            Temporal.showMessage(parent, "El nombre de usuario nopuede incluir el caracter '#'.", "Error");
-
-            return null;
-        } else if (userName.length() > 16 || password.length() > 8) {
-
-            Temporal.showMessage(parent, "Nombre o contraseña demasiado largos. El maximo para usuario es 16 caracteres y para la contraseña 8", "Error");
-
-            return null;
-        } else {
+        if (checkCredentials("0",username,password,parent)){
 
             DAOUser daoUser = new DAOUser();
 
-            daoUser.insert(new User(null, userName, password, 0));
+            daoUser.insert(new User(null, username, password, 0));
 
-            return daoUser.getRegister(userName);
+            return daoUser.getRegister(username);
 
-        }
+        }else return null;
 
     }
 
@@ -85,30 +81,63 @@ public class DataMethods {
     }
 
 
+    public static boolean checkCredentials(String code,String userName,String password, Component parent){
+
+        if (userName.contains("#")) {
+
+            Temporal.showMessage(parent, "El nombre de usuario nopuede incluir el caracter '#'.", "Error");
+
+            return false;
+        } else if (userName.length() > 16 || password.length() > 8) {
+
+            Temporal.showMessage(parent, "Nombre o contraseña demasiado largos. El maximo para usuario es 16 caracteres y para la contraseña 8", "Error");
+
+            return false;
+
+        }else if(Temporal.isNumeric(code)){
+
+            Temporal.showMessage(parent, "Error en la clave", "Error");
+
+            return false;
+        }else return true;
+
+    }
+
+
     //Selector
-    public static User changeUserData(User u, Component parent) {
+    public static User changeUserData(User u, Component parent,int option) {
 
         try {
             if (u == null) throw new noUser("No es posible cambiar las credenciales del usuario");
 
             DAOUser daoUser = new DAOUser();
 
+            User temporalUser=new User(u.getCode(),u.getName(),u.getPassword(),u.getSaldo());
 
-            if (1 == 1) u.setName("Pedir Nombre");
+            if (option == 1) temporalUser.setName("Pedir Nombre");
+
+            else if (option == 2) temporalUser.setPassword("Pedir contraseña");
+
+            else if (option==3){
+
+                temporalUser.setName("Pedir Nombre");
+
+                temporalUser.setPassword("Pedir contraseña");
+
+            }else return u;
 
 
-            else if (1 == 2) u.setPassword("Pedir contraseña");
-
-            else {
-
-                u.setName("Pedir Nombre");
-
-                u.setPassword("Pedir contraseña");
-
+            if (checkCredentials(temporalUser.getCode(),temporalUser.getName(),temporalUser.getPassword(),parent)) {
+                daoUser.update(u);
+                return temporalUser;
             }
-            daoUser.update(u);
+            else{
+                Temporal.showMessage(parent,"Credenciales actualizadas no validas", "Error");
 
-            return u;
+                return u;
+            }
+
+
         } catch (noUser e) {
 
             Temporal.showMessage(parent, e.getMessage(), "Error");
