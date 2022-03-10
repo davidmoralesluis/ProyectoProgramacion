@@ -1,11 +1,11 @@
 package com.main;
 
 
-import com.Temporal;
 import com.buscaminas.Tablero;
 import com.data.DataMethods;
 import com.data.User;
 import com.supertragaperras.Supertragaperras;
+import libreriaProyecto.LiProyecto;
 
 import javax.swing.*;
 import java.awt.*;
@@ -142,7 +142,7 @@ public class Lobby extends JFrame implements ActionListener {
                         DataMethods.saveScore(user, t.getPuntuacion());
                     }
 
-                    if (Temporal.confirmMessage(t, "Quieres volver a jugar?", "Otra partida?")) {
+                    if (LiProyecto.confirmMessage(t, "Quieres volver a jugar?", "Otra partida?")) {
 
                         tableroMina();
 
@@ -196,7 +196,7 @@ public class Lobby extends JFrame implements ActionListener {
         if (action.getSource() == score) {
 
 
-            int seleccion = Temporal.simpleSelector("Elige una opcion", "Puntuaciones", new String[]{"Usuario", "Global"}, this, new ImageIcon(CARPETA + "trophy.png"));
+            int seleccion = LiProyecto.simpleSelector("Elige una opcion", "Puntuaciones", new String[]{"Usuario", "Global"}, this, new ImageIcon(CARPETA + "trophy.png"));
             if (seleccion == 0)
 
                 DataMethods.showUserScore(user, this);
@@ -211,13 +211,13 @@ public class Lobby extends JFrame implements ActionListener {
 
             int eleccion;
             if (user != null) {
-                eleccion = Temporal.simpleSelector("Usuario" + user.getName() + "#" + user.getCode(), "Usuario", new String[]{"Modificar credenciales", "Cerrar sesion", "Borrar usuario"}, this, img.get(4));
+                eleccion = LiProyecto.simpleSelector("Usuario: " + user.getName() + "#" + user.getCode(), "Usuario", new String[]{"Modificar credenciales", "Cerrar sesion", "Borrar usuario"}, this, img.get(4));
 
                 switch (eleccion) {
 
                     case 0 -> {
 
-                        eleccion = Temporal.simpleSelector("Usuario" + user.getName() + "#" + user.getCode(), "Usuario", new String[]{"Cambiar Nombre", "Cambiar contraseña", "Cambiar nombre y contraseña"}, this, img.get(4));
+                        eleccion = LiProyecto.simpleSelector("Usuario: " + user.getName() + "#" + user.getCode(), "Usuario", new String[]{"Cambiar Nombre", "Cambiar contraseña", "Cambiar nombre y contraseña"}, this, img.get(4));
 
                         user = DataMethods.changeUserData(user, this, eleccion);
 
@@ -225,14 +225,14 @@ public class Lobby extends JFrame implements ActionListener {
 
                     case 1 -> {
 
-                        if (JOptionPane.showConfirmDialog(this, "Estas seguro de esta operacion?", "Borrar Usuario", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
-                            user = DataMethods.deleteUser(user, this);
+                        user = null;
 
                     }
 
                     case 2 -> {
 
-                        user = null;
+                        if (JOptionPane.showConfirmDialog(this, "Estas seguro de esta operacion?", "Borrar Usuario", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+                            user = DataMethods.deleteUser(user, this);
 
                     }
 
@@ -243,17 +243,17 @@ public class Lobby extends JFrame implements ActionListener {
                 }
             }else{
 
-                eleccion=Temporal.simpleSelector("Escoja opcion", "Usuario", new String[]{"Iniciar Sesion","Registrarse"}, this, img.get(4));
+                eleccion=LiProyecto.simpleSelector("Escoja opcion", "Usuario", new String[]{"Iniciar Sesion","Registrarse"}, this, img.get(4));
 
 
                 if (eleccion==0){
 
-                    user=DataMethods.login(Temporal.askString("Introduce el nombre de usuario completo (Ejemplo#0)",this),Temporal.askString("Introduce la contraseña",this),this);
+                    user=DataMethods.login(LiProyecto.askString("Introduce el nombre de usuario completo (Ejemplo#0)",this),LiProyecto.askString("Introduce la contraseña",this),this);
 
                 }
                 else if (eleccion==1){
 
-                    user=DataMethods.register(Temporal.askString("Introduce un nombre de usuario",this),Temporal.askString("Introduce una contraseña",this),this);
+                    user=DataMethods.register(LiProyecto.askString("Introduce un nombre de usuario",this),LiProyecto.askString("Introduce una contraseña",this),this);
                 }
 
             }

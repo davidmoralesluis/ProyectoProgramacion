@@ -1,7 +1,7 @@
 package com.buscaminas;
 
 
-import com.Temporal;
+import libreriaProyecto.LiProyecto;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -29,6 +29,11 @@ public class Tablero extends JFrame implements ActionListener {
         return terminada;
     }
 
+    /**
+     * Constructor del tablero del buscaminas
+     * @param dimension dimension del tablero
+     * @param dif "Dificultad" de la partida. Esto multiplica le numero de casillas para dar el numero de minas
+     */
     public Tablero(int dimension, int dif) {
         super("Buscaminas");
         this.setSize(50 * dimension, 50 * dimension);
@@ -88,6 +93,9 @@ public class Tablero extends JFrame implements ActionListener {
     }
 
 
+    /**
+     * Coloca las minas en el tablero
+     */
     private void ponerMinas() {
 
         //Coloca minas hasta llegar al limite establecido
@@ -99,9 +107,9 @@ public class Tablero extends JFrame implements ActionListener {
             //Esto se asegura que la posicion dada no sea una mina
             do {
 
-                posX = Temporal.getRandomPosArray(dimensiones);
+                posX = LiProyecto.getRandomPosArray(dimensiones);
 
-                posY = Temporal.getRandomPosArray(dimensiones);
+                posY = LiProyecto.getRandomPosArray(dimensiones);
 
             } while (celdas[posX][posY].isMina());
 
@@ -131,7 +139,13 @@ public class Tablero extends JFrame implements ActionListener {
         }
     }
 
-
+    /**
+     * Comprueba si la celda asociada al boton pulsado tiene una mina
+     * @param posX Posicion x del boton
+     * @param posY Posicion y del boton
+     * @param boton Objeto boton que se ha pulsado
+     * @param c Objeto celda que esta asociada al boton
+     */
     public void comprobar(int posX, int posY, JButton boton, Celda c) {
 
         if (c.isMina()) {
@@ -203,7 +217,10 @@ public class Tablero extends JFrame implements ActionListener {
         }
     }
 
-    //Esto comprueba las celdas destapadas del tablero
+    /**
+     * Comprueba el numero de celdas destapadas del tablero
+     * @return El numero de celdas destapadas
+     */
     private int getDestapadas() {
         int contador = 0;
         for (int i = 0; i < celdas.length; i++) {
@@ -216,6 +233,10 @@ public class Tablero extends JFrame implements ActionListener {
         return contador;
     }
 
+    /**
+     * Calcula la puntuacion de la partida
+     * @param victory Comprueba si se ha ganado o perdido la partida para dar un "extra" de puntuacion
+     */
     public void calculateResult(boolean victory) {
 
         playtime = System.currentTimeMillis() - playtime;
@@ -247,7 +268,7 @@ public class Tablero extends JFrame implements ActionListener {
 
         }
 
-        Temporal.showMessage(this, "La puntuacion es de " + puntuacion + " puntos", title);
+        LiProyecto.showMessage(this, "La puntuacion es de " + puntuacion + " puntos", title);
         terminada = true;
         this.dispose();
 

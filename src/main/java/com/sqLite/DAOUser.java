@@ -13,18 +13,19 @@ public class DAOUser {
     public DAOUser() {
     }
 
-
+    /**
+     * Inserta en la base de datos los datos del usuario
+     * @param u Usuario cuyos datos quieren añadirse
+     */
     public void insert(User u) {
 
         Connection conn = null;
-
-        String insert = "INSERT INTO Usuario(nomUsuario, conUsuario) VALUES(?,?)";
 
         try {
 
             conn = new DBConnection().getConn();
 
-            PreparedStatement psUser = conn.prepareStatement(insert);
+            PreparedStatement psUser = conn.prepareStatement("INSERT INTO Usuario(nomUsuario, conUsuario) VALUES(?,?)");
             psUser.setString(1, u.getName());
             psUser.setString(2, u.getPassword());
             psUser.executeUpdate();
@@ -41,6 +42,10 @@ public class DAOUser {
 
     }
 
+    /**
+     * Elimina los datos de un usuario de la base de datos
+     * @param u Usuario del que se quiere eliminar los datos
+     */
     public void delete(User u) {
 
         Connection conn = null;
@@ -49,8 +54,10 @@ public class DAOUser {
 
             conn = new DBConnection().getConn();
 
-            PreparedStatement psUser = conn.prepareStatement("DELETE FROM Usuario WHERE idUsuario='" + u.getCode() + "'");
+            PreparedStatement psUser = conn.prepareStatement("DELETE FROM Usuario WHERE idUsuario=?");
+            psUser.setString(1, u.getCode() );
             psUser.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -63,6 +70,10 @@ public class DAOUser {
 
     }
 
+    /**
+     * Actualiza los datos del usuario en la base de datos
+     * @param u Usuario del que se quiere actualizar los datos
+     */
     public void update(User u) {
 
         Connection conn = null;
@@ -88,18 +99,21 @@ public class DAOUser {
         }
     }
 
+    /**
+     * Mete en una ArrayList de usuarios a todos los usuarios de la base de datos
+     * @return ArrayList de usuarios
+     */
     public ArrayList<User> select() {
 
         ArrayList<User> userList = new ArrayList<User>();
         Connection conn = null;
-        String select = "SELECT idUsuario,nomUsuario FROM Usuario";
         ResultSet result;
 
         try {
 
             conn = new DBConnection().getConn();
 
-            result = conn.createStatement().executeQuery(select);
+            result = conn.createStatement().executeQuery("SELECT idUsuario,nomUsuario FROM Usuario");
 
             while (result.next()) {
 
@@ -120,18 +134,21 @@ public class DAOUser {
 
     }
 
+
+
     public User get(String id) {
 
         User u = null;
         Connection conn = null;
-        String get = "SELECT * FROM Usuario WHERE idUsuario='" + id + "'";
-        ResultSet result = null;
+        ResultSet result;
 
         try {
 
             conn = new DBConnection().getConn();
 
-            result = conn.createStatement().executeQuery(get);
+            PreparedStatement platform=conn.prepareStatement("SELECT * FROM Usuario WHERE idUsuario=?");
+            platform.setString(1, id );
+            result = platform.executeQuery();
 
             if (result.next())
                 u = new User(result.getString("idUsuario"), result.getString("nomUsuario"), result.getString("conUsuario"), result.getDouble("saldo"));
@@ -150,6 +167,11 @@ public class DAOUser {
 
     }
 
+
+    /**
+     * Update que solo se utiliza para actualizar el saldo en el monedero del usuario
+     * @param u Usuario del que se quiere actualizar el saldo
+     */
     public void updateSaldo(User u) {
 
         Connection conn = null;
@@ -176,18 +198,23 @@ public class DAOUser {
 
     }
 
+    /**
+     * Get de uso unico que se utiliza para iniciar sesion.
+     * @param userName Nombre del usuario a buscar en la base de datos
+     * @return Los datos del usuario con el id más alto (último insert) que tenga el nombre introducido por parámetro
+     */
 
     public User getRegister(String userName) {
         User u = null;
         Connection conn = null;
-        String get = "SELECT * FROM bugs WHERE ID = (SELECT MAX(ID) FROM bugs WHERE user ='" + userName + "')";
         ResultSet result;
 
         try {
 
             conn = new DBConnection().getConn();
-
-            result = conn.createStatement().executeQuery(get);
+            PreparedStatement platform=conn.prepareStatement("SELECT * FROM Usuario WHERE idUsuario = (SELECT MAX(idUsuario) FROM Usuario WHERE nomUsuario =?)");
+            platform.setString(1,userName);
+            result =platform.executeQuery();
 
             if (result.next())
                 u = new User(result.getString("idUsuario"), result.getString("nomUsuario"), result.getString("conUsuario"), result.getDouble("saldo"));

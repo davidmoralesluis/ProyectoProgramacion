@@ -1,8 +1,8 @@
 package com.data;
 
-public class noUser extends Exception {
+public class NoUserException extends Exception {
 
-    public noUser(String errorMessage) {
+    public NoUserException(String errorMessage) {
         super("Error: No se ha iniciado sesion con ningun usuario. " + errorMessage);
     }
 
