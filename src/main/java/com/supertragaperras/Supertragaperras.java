@@ -208,7 +208,7 @@ public class Supertragaperras extends JFrame implements ActionListener {
             } else {
                 if (cash) {
                     insertArrow.setVisible(false);
-                    rightArrow.setBounds(128, 216, 32, 32);
+                    rightArrow.setBounds(118, 216, 32, 32);
                     leftArrow.setBounds(250, 216, 32, 32);
                 } else {
                     insertArrow.setVisible(true);

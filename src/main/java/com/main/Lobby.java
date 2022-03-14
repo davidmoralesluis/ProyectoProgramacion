@@ -28,7 +28,6 @@ public class Lobby extends JFrame implements ActionListener {
     private JButton mina;
     private JButton logUser;
     private JButton score;
-    private JLabel maq;
     private Timer halfsec;
     private boolean sec;
     private int bling = 0;
@@ -54,7 +53,7 @@ public class Lobby extends JFrame implements ActionListener {
         super("GAMES");
 
         //maquina
-        this.setBounds(1000, 100, 480, 640);
+        this.setBounds(1000, 100, 480, 540);
         this.setResizable(false);
         this.setLayout(null);
         this.setLocationRelativeTo(null);
@@ -84,15 +83,14 @@ public class Lobby extends JFrame implements ActionListener {
         add(titulo);
 
         slot = new JButton();
-        slot.setBounds(50, 400, 100, 148);
-        slot.setBackground(Color.BLACK);
+        slot.setBounds(50, 300, 100, 148);
         slot.setOpaque(true);
         slot.setIcon(img.get(2));
         slot.addActionListener(this);
         add(slot);
 
         mina = new JButton();
-        mina.setBounds(320, 434, 100, 100);
+        mina.setBounds(320, 334, 100, 100);
         mina.setOpaque(true);
         mina.setIcon(img.get(3));
         mina.addActionListener(this);
@@ -259,15 +257,6 @@ public class Lobby extends JFrame implements ActionListener {
             }
         }
 
-        if (action.getSource() == halfsec) {
 
-            if (sec) {
-                bling++;
-                System.out.println("*takt*" + bling);
-                slot.setBackground(Color.BLACK);
-            } else {
-                slot.setBackground(Color.decode("#EABE3F"));
-            }
-        }
     }
 }
