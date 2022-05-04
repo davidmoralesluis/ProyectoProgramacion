@@ -12,9 +12,9 @@ public class XxO extends JFrame implements ActionListener {
     private final String CARPETA = "src" + File.separator + "main" + File.separator + "java" + File.separator + "com" + File.separator + "xxo" + File.separator + "img" + File.separator;
 
 
-    private JLabel tablero;
+    private JLabel fin;
 
-    private JLabel titulo;
+    private JLabel tablero,titulo;
 
     private JButton a1,a2,a3,b1,b2,b3,c1,c2,c3;
 
@@ -30,6 +30,7 @@ public class XxO extends JFrame implements ActionListener {
         img.add(new ImageIcon(CARPETA + "board2.png"));//0
         img.add(new ImageIcon(CARPETA + "x.png"));//1
         img.add(new ImageIcon(CARPETA + "o.png")); //2
+        img.add(new ImageIcon(CARPETA + "verical.png")); //2
 
         this.setBounds(1000, 300, 400, 480);
         this.setLayout(null);
@@ -52,6 +53,8 @@ public class XxO extends JFrame implements ActionListener {
         tablero.setIcon(img.get(0));
         tablero.setOpaque(false);
         add(tablero);
+
+
 
         a1 = new JButton();
         a1.setBounds(80,110,64,64);
@@ -117,6 +120,17 @@ public class XxO extends JFrame implements ActionListener {
         add(c3);
 
 
+        fin = new JLabel();
+        fin.setBounds(-50,10,300,300);
+        fin.setIcon(img.get(3));
+        fin.setOpaque(false);
+        fin.setVisible(false);
+        tablero.add(fin);
+    }
+
+    public void gameOver(){
+
+
     }
 
     @Override
@@ -134,6 +148,11 @@ public class XxO extends JFrame implements ActionListener {
 
         if (e.getSource()==a1){
             a1.setIcon(img.get(icono));
+            fin.setVisible(true);
+            toFront();
+            a1.removeActionListener(this);
+            a2.removeActionListener(this);
+            a3.removeActionListener(this);
         }
 
         if (e.getSource()==b1){
